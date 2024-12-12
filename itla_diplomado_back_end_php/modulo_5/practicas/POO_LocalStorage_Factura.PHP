@@ -173,7 +173,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         <div class="practice-content">
             <nav>
                 <a href="?ver=productos">Ver Productos</a> |
-                <a href="?ver=clientes">Ver Clientes</a>
+                <a href="?ver=clientes">Ver Clientes</a> |
+                <a href="?ver=facturas">Ver Facturas</a>
             </nav>
             <hr>
             <?php
@@ -182,6 +183,44 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                     renderProductos();
                 } elseif ($_GET['ver'] == 'clientes') {
                     renderClientes();
+                } elseif ($_GET['ver'] == 'facturas') {
+                    echo "<h2>Facturas</h2>";
+                    // ejemplos de facturas con productos y clientes
+                    $factura1 = [
+                        'id' => uniqid(),
+                        'cliente' => $_SESSION['clientes'][array_key_first($_SESSION['clientes'])],
+                        'productos' => [$_SESSION['productos'][array_key_first($_SESSION['productos'])], $_SESSION['productos'][array_key_last($_SESSION['productos'])]]
+                    ];
+                    $factura2 = [
+                        'id' => uniqid(),
+                        'cliente' => $_SESSION['clientes'][array_key_last($_SESSION['clientes'])],
+                        'productos' => [$_SESSION['productos'][array_key_first($_SESSION['productos'])]]
+                    ];
+                    echo "ID-Factura {$factura1['id']} <br>";
+                    echo "Cliente: {$factura1['cliente']->nombre} <br>";
+                    echo "Productos: ";
+                    echo "<ul>";
+                    foreach ($factura1['productos'] as $producto) {
+                        echo "<li>{$producto->nombre} - RD'$'{$producto->precio} pesos</li>";
+                    }
+                    echo "-------------------------<br>";
+                    echo "Total: " . array_reduce($factura1['productos'], function ($total, $producto) {
+                        return $total + $producto->precio;
+                    }, 0);
+                    echo "</ul>";
+                    echo "ID-Factura {$factura2['id']} <br>";
+                    echo "Cliente: {$factura2['cliente']->nombre} <br>";
+                    echo "Productos: ";
+                    echo "<ul>";
+                    foreach ($factura2['productos'] as $producto) {
+                        echo "<li>{$producto->nombre} - RD'$'{$producto->precio} pesos</li>";
+                    }
+                    echo "-------------------------<br>";
+                    echo "Total: " . array_reduce($factura2['productos'], function ($total, $producto) {
+                        return $total + $producto->precio;
+                    }, 0);
+                    echo "</ul>";
+
                 }
             } else {
                 echo "<p>Seleccione una opción del menú para continuar.</p>";
